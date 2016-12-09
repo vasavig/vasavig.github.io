@@ -1,1 +1,0 @@
-# vasavig.github.io
