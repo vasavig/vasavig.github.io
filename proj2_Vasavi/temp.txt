@@ -1,0 +1,12 @@
+Getting interest points
+    Harris
+    ANMS
+    Colfilt
+    Comparison between the last two
+Getting feature descriptors - SIFT implementation
+Feature matching
+Results on various images
+
+notre dame: 0.04 0.005 0.5
+mt rushmore: 0.04 0.005 0.30 - increasing alpha improved from 77 to 91%
+epicogal gaudi - much difference in intensity - improving gaussian sigma increased blur and therefore techniques like PCA-SIFT work better with blurred images, num of matched points, viewing angle; accuracy improved with increasing the alpha param in harris corner 3 to 6%
