@@ -1,0 +1,202 @@
+<html>
+<head>
+<title>Deep Learning Project</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>Vasavi Gajarla</h1>
+</div>
+</div>
+<div class="container">
+
+<h2> Project 6 / Deep Learning</h2>
+
+<p>This report discusses about using deep learning to train convolutional neural networks and categorize the 15 scenes data using them. It starts with describing how a neural network can be built from scratch - different kinds of layers involved in it, effects of improving diversity of image data using jittering, etc. It then goes on to talk about using a network pre-trained on imagenet-VGG dataset, fine tuning it, and testing the classification results on 15 scenes data.</p>
+
+<div style="clear:both">
+<h3>Part 1: Training a deep network from scratch</h3>
+<h4>Problem 0</h4>
+<p>The code provided with a network contaning one convolutional layer, a pooling layer, a rectified linear layer, and another convolutional layer gives an accuracy of around 29%.</p>
+<p>The plots for results and filter visualizations can be seen below.</p>
+<img src="part1_0_graphs.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="Part1_0_filter.jpg" style="float: middle; width: 50%; margin-left: 25%; margin-bottom: 1em;">
+<p>It can be seen from the filter that none of those look like proper edge detectors. The reasons for this rather poor performance could be - not enough training data, not enough epochs (used only 50 here), not enough depth in network, maybe the network is prone to overfitting. We try to analyse each of these problems in the below sections.</p>
+
+<div style="clear:both">
+<h4>Problem 1 (Not enough training data)</h4>
+<p>The dataset contains just 1500 images of scenes from 15 categories. One way to improve the diversity and the amount of training data is to modify the existing images in such a way that the label will still remain the same. A flip about the vertical separator in the middle of the image will result in an image which matches this criterion. This process is called "jittering". After implementing this mirroring, the accuracy improved by 10% over baseline in above section to 39%.</p>
+<p>The plots for results and filter visualizations can be seen below.</p>
+<img src="part1_1_graphs.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="Part1_1_filter.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 0.5em;">
+<p>The number of iterations used here is 150, since the network gets to train on almost similar data multiple times, it learns much better than it would otherwise. However, this kind of ovefits the network to training data, so as can be seen from the graph above, the training error comes down far more rapidly than the validation error. </p>
+<div style="clear:both">
+<h4>Problem 2 (Zero-centering images)</h4>
+<p>Scene recognition is mainly done using filters for edge detections and their orientations. Fundamentally, this is a part of the foreground of an image, and the background of an image doesn't play a role in this. Background can be removed from an image by subtracting the mean of all images in dataset from each of the training and testing images. The results of this change result in a further increase of 13% in accuracy over the previous section, with a value of around 52%.</p>
+<p>The plots for results and filter visualizations can be seen below.</p>
+<img src="mean_graph.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="mean_fil.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 0.5em;">
+<p>It can be seen from the above filter image that some of them actually look like horizontal and vertical edge detectors (filters which have rows with full dark and bright rows or columns).</p>
+<div style="clear:both">
+<h4>Problem 3 (Regularization of network)</h4>
+<p>As we have seen in the above sections, the improvements have resulted in a rapid fall in error for training set, but a rather slower fall in error for the validation error. This basically indicates that the network is overfitting to the training data. One way to limit this effect is to disconnect a few connections in the fully connected layers of the network, resulting in reduction of number of features passed to the further layers in the network. Therefore, the information learnt by network is limited in a sense.</p>
+<p>The plots for results and filter visualizations can be seen below.</p>
+<img src="regular_graphs.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="regular_filter.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 0.5em;">
+<p>As expected the accuracy increased after regularization increased to ~60%. It can be observed in the graph above that now the training error reduces but at a smaller rate compared to the above section. This essentially proves that overfitting is controlled. Also, the filters have a much more pronounced edge detectors.</p>
+<div style="clear:both">
+<h4>Problem 4 (Increasing the depth of the network)</h4>
+<p>Ideally we expect a network to learn the weights better and perform more accurate classification as we increase the number of layers in it. An experiment of addition of a convolution layer and pooling layer to the network has been done. The existing network has also been modified for the pooling width, stride etc such that after addition of the new layers also the ultimate data size of output of the final convolution layer is 1. The new network structure is depicted in the image below.</p>
+<img src="new_layers_info.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<p>The plots for results and filter visualizations can be seen below.</p>
+<img src="depth_graphs.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="depth_fil.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 0.5em;">
+<p>Surprisingly, the accuracy has only increased by ~0.6% compared to the above section to ~60.6%. The reason for this could be that even though the network is data, the amount of data and its diversity (~3000 distinct images) is not enough to extract that advantage from it.</p>
+<div style="clear:both">
+<h3>Part 2: Fine-tuning pre-trained deep network (VGG-F)</h3>
+<p>A pre-trained network called the imagenet-vgg-f is used for training and testing the 15 scene data. Advantages of using a pre-trained network is that the weights of layers have already been optimized for that particular dataset, and not random. Since the network is as deep as 21 layers and trained on reasonably large amount of data these weights are converged to optimal values. This also forms a good setup to be fine-tuned - provided we add/modify a few layers in it.</p>
+<div style="clear:both">
+<h4>Strategy Used</h4>
+<p>For tuning the network, the last two layers (fc8 and softmax) have been removed. The idea is to replace them with a layer with a data depth of 15 (one for every scene category) instead of 1000 ImageNet categories. Since a dropout layer is missing from the original network, one has been added before the fc8 layer to take care of the overfitting problem. </p>
+<div style="clear:both">
+<h4>Image Data Creation</h4>
+<p>The VGG-F net expects an RGB image as input. Since the 15 scene database only has greyscale images, these have been concatenated to 3 dimensions to make an equivalent RGB image. Also, zero-centering has been done using the net.normalization.averageImage as the mean image.</p>
+<div style="clear:both">
+<h4>Results</h4>
+<p>The results for fine tuning the pre-trained network can be seen below.</p>
+<img src="graphs_best.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 1em;">
+<img src="best_filter.jpg" style="float: middle; width: 50%; margin-left: 25%;margin-bottom: 0.5em;">
+<p>Since the network is 22-layer deep and pre-trained as well, the accuracy is expected to be high. This is evident from the results, 86.6% accurate. The filters also are extensively edge detectors oriented in various directions, both black and white as well as colored. </p>
+</body>
+</html>

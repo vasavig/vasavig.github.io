@@ -1,0 +1,215 @@
+<html>
+<head>
+<title>Computer Vision Project</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 960px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+table.table1 td img
+{
+	vertical-align: middle;
+}
+table.table2 td img
+{
+	vertical-align: middle;
+}
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>Vasavi Gajarla <span style="color: #DE3737"></span></h1>
+</div>
+</div>
+<div class="container">
+
+<h2>CS 4495 / 6476 Project 1: Image Filtering and Hybrid Images</h2>
+<p>This report starts with types and techniques in image filtering and explains the same with an example. It then goes on to describe the processes involved in creation of hybrid images from a pair of images. It ends by showing tabular results of five pairs of images on which various filtering operations are performed and hybrid images are created.</p>
+
+<div style="clear:both">
+<h3>Image Filtering</h3>
+<p> Image filtering in spatial domain can be done with filters of odd dimensions with the center value aligned with the image pixel (A filter wth even dimensions leads to ambiguity in deciding the center pixel and are therefore not used.). A sum of product of elements in filter and the corresponding subset of elements image result in pixel value of the filtered image. The filter dimensions may overshoot the pixels in image (especially on corners and edges). For this reason, images have to be padded before filtering operation is performed. Padding can be done either with zero pixels or with pixels of image itself formed by borders of rows and columns as mirrors. Since the filter is passed only on the pixels of original image, the resolution of the filtered image will remain identical to original image.</p>
+
+<p> Low frequency filters like box filter and Gaussian filter tend to blur the image. High frequency filters like Sobel filter and Discrete Laplacian filter tend to focus on areas of images with difference in intensity, thereby acting as good edge detectors. The following set of images shows the result of Box filter, Gaussian filter, Sobel filter, and Discrete Laplacian filter (from left to right) on a colored image of a bicycle.</p>
+
+<img src="blur_image.jpg" style="float: left; width: 23%; margin-right: 1%; margin-bottom: 0.5em;">
+<img src="large_blur_image.jpg" style="float: left; width: 23%; margin-right: 1%; margin-bottom: 0.5em;">
+<img src="sobel_image.jpg" style="float: left; width: 23%; margin-right: 1%; margin-bottom: 0.5em;">
+<img src="laplacian_image.jpg" style="float: left; width: 23%; margin-right: 1%; margin-bottom: 0.5em;">
+
+<div style="clear:both">
+<h3>Hybrid Image Generation</h3>
+
+<p> The below table contains the results of filtering and hybrid generation on a set of five image pairs. First column of images are formed by filtering the original images by applying a low pass Gaussian filter with different free parameter (sigma) value for each of them. Second column shows the result of removing the low frequency Gaussian filter (of the same free parameter value as the one used on first image) on the second image from its original form; this results in a high frequency filtering operation on this image. The third column shows the resultant hybrid image obtained by combining the low frequency first image and the high frequency seond image. As the properties of hybrid images suggest, high frequency component image has a dominating effect on vision when viewed from close distances or the image resolution is big; in a similar fashion, low frequency component image dominates when hybrid image is viewed from a distance far away or when the image resolution is low. This can be visualized by using a technique called 'Progressive downsampling', which is essentially reducing the image resolution by decresing the pixel count in image, at the same time, retaining the overall visual effect (of the image itself).</p>
+
+<h4>Table: Results of filtering and hybrid formation</h3>
+
+<table class="table1" border=1>
+<tr>
+<td>
+<img src="low_frequencies_1.jpg" width="24%"/>
+<img src="high_frequencies_1.jpg"  width="24%"/>
+<img src="hybrid_image_1.jpg" width="24%"/>
+<img src="hybrid_image_scales_1.jpg" width="24%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<img src="low_frequencies_2.jpg" width="24%"/>
+<img src="high_frequencies_2.jpg"  width="24%"/>
+<img src="hybrid_image_2.jpg" width="24%"/>
+<img src="hybrid_image_scales_2.jpg" width="24%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<img src="low_frequencies_3.jpg" width="24%"/>
+<img src="high_frequencies_3.jpg"  width="24%"/>
+<img src="hybrid_image_3.jpg" width="24%"/>
+<img src="hybrid_image_scales_3.jpg" width="24%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<img src="low_frequencies_4.jpg" width="24%"/>
+<img src="high_frequencies_4.jpg"  width="24%"/>
+<img src="hybrid_image_4.jpg" width="24%"/>
+<img src="hybrid_image_scales_4.jpg" width="24%"/>
+</td>
+</tr>
+
+
+<tr>
+<td>
+<img src="low_frequencies_5.jpg" width="24%"/>
+<img src="high_frequencies_5.jpg"  width="24%"/>
+<img src="hybrid_image_5.jpg" width="24%"/>
+<img src="hybrid_image_scales_5.jpg" width="24%"/>
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
